@@ -1,0 +1,59 @@
+{
+  "name": "blindinterview",
+  "version": "1.0.0",
+  "private": true,
+  "description": "BlindInterview - AI-powered interview platform",
+  "author": "Omishigvan99",
+  "license": "ISC",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "start": "turbo run start",
+    "lint": "turbo run lint",
+    "format": "turbo run format",
+    "test": "turbo run test",
+    "test:watch": "turbo run test:watch",
+    "clean": "turbo run clean",
+    "type-check": "turbo run type-check",
+    "dev:backend": "turbo run dev --filter=@blindinterview/backend",
+    "dev:frontend": "turbo run dev --filter=@blindinterview/frontend",
+    "build:backend": "turbo run build --filter=@blindinterview/backend",
+    "build:frontend": "turbo run build --filter=@blindinterview/frontend",
+    "install:all": "pnpm install",
+    "clean:all": "pnpm run clean && rm -rf node_modules pnpm-lock.yaml",
+    "reset": "pnpm run clean:all && pnpm install",
+    "docker:build": "pnpm run docker:build:backend && pnpm run docker:build:frontend",
+    "docker:build:backend": "docker build -f apps/backend/Dockerfile -t blindinterview-backend .",
+    "docker:build:frontend": "docker build -f apps/frontend/Dockerfile -t blindinterview-frontend .",
+    "docker:run:backend": "docker run -p 8501:8080 --env-file apps/backend/.env.local blindinterview-backend",
+    "docker:run:frontend": "docker run -p 8500:8080 --env-file apps/frontend/.env blindinterview-frontend",
+    "docker:dev:backend": "pnpm run docker:build:backend && pnpm run docker:run:backend",
+    "docker:dev:frontend": "pnpm run docker:build:frontend && pnpm run docker:run:frontend",
+    "docker:stop": "docker stop $(docker ps -q --filter ancestor=blindinterview-backend) $(docker ps -q --filter ancestor=blindinterview-frontend) 2>/dev/null || true",
+    "docker:clean": "docker rmi blindinterview-backend blindinterview-frontend 2>/dev/null || true",
+    "docker:clean:all": "docker system prune -af --volumes",
+    "docker:logs:backend": "docker logs $(docker ps -q --filter ancestor=blindinterview-backend)",
+    "docker:logs:frontend": "docker logs $(docker ps -q --filter ancestor=blindinterview-frontend)",
+    "compose:up": "docker-compose up -d",
+    "compose:down": "docker-compose down",
+    "compose:build": "docker-compose build",
+    "compose:logs": "docker-compose logs -f",
+    "compose:restart": "docker-compose restart"
+  },
+  "devDependencies": {
+    "@turbo/gen": "^2.0.0",
+    "turbo": "^2.0.0",
+    "prettier": "^3.6.2",
+    "eslint": "^9.0.0",
+    "typescript": "^5.6.0"
+  }
+}

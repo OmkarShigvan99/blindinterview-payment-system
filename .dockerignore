@@ -1,0 +1,37 @@
+# Ignore node_modules in all directories
+**/node_modules
+
+# Ignore git and version control
+.git
+.gitignore
+
+# Ignore build artifacts and cache
+.turbo
+**/dist
+**/.next
+
+# Ignore documentation
+*.md
+docs/
+
+# Ignore environment files
+.env*
+*.env
+
+# Ignore IDE and editor files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Ignore log files
+**/logs
+**/*.log
+
+# Ignore test coverage
+**/coverage
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db

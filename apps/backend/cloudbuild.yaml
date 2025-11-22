@@ -1,0 +1,51 @@
+steps:
+    # Build the Docker image
+    - name: 'gcr.io/cloud-builders/docker'
+      args:
+          [
+              'build',
+              '-t',
+              '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/blindinterview-backend:${SHORT_SHA}',
+              '-f',
+              'apps/backend/Dockerfile',
+              '.',
+          ]
+      timeout: '1200s'
+
+    # Push the Docker image with both tags
+    - name: 'gcr.io/cloud-builders/docker'
+      args:
+          [
+              'push',
+              '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/blindinterview-backend:${SHORT_SHA}',
+          ]
+
+    # Deploy to Cloud Run
+    - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+      entrypoint: 'gcloud'
+      args:
+          [
+              'run',
+              'deploy',
+              '${_SERVICE_NAME}',
+              '--image=${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/blindinterview-backend:${SHORT_SHA}',
+              '--region=${_REGION}',
+              '--platform=managed',
+              '--allow-unauthenticated',
+              '--port=8080',
+              '--quiet',
+          ]
+
+# Build options - using defaults for lowest cost
+options:
+    logging: CLOUD_LOGGING_ONLY
+    substitutionOption: ALLOW_LOOSE
+
+# Define substitution variables with defaults
+substitutions:
+    _REGION: 'asia-south1'
+    _REPO: 'blindinterview-repo'
+    _SERVICE_NAME: 'blindinterview-backend'
+
+# Set timeout for the entire build
+timeout: '1800s'
